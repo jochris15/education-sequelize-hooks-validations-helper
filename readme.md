@@ -81,10 +81,23 @@ User.beforeCreate(async (user, options) => {
 ```
 ## [Sequelize Validations & Constraints](https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/)
 Sequelize menyediakan 2 cara untuk menambahkan aturan pada aplikasi dengan menggunakan `Validation` & `Constraints`. Apa perbedaannya?
-- [Validations](https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#per-attribute-validations): Validasi dilakukan pada level aplikasi sebelum data dikirim ke database. Jika validasi gagal, Sequelize akan melemparkan error dan tidak akan menyimpan data ke database. Kita bisa menambahkan properti `validate` pada kolom model untuk menambahkan validasi.
+- [Validations](https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#per-attribute-validations): Validasi dilakukan pada level aplikasi sebelum data dikirim ke database. Jika validasi gagal, Sequelize akan melemparkan error dan tidak akan menyimpan data ke database. Kita bisa menambahkan properti `validate` pada kolom model untuk menambahkan validasi. Kita juga bisa menambahkan custom validasi per kolom / model wide.
 - [Constraints](https://sequelize.org/docs/v6/core-concepts/validations-and-constraints/#unique-constraint): Constraints adalah aturan yang diterapkan pada level database. Jika data yang dimasukkan tidak memenuhi constraints, database akan menolak operasi tersebut. Constraints perlu ditambahkan pada `migrations` dan juga `model`. Contoh constraints yang umum digunakan adalah `unique`, `allowNull`,  dan `defaultValue`.
 
 ## Helper Functions
 Apa itu helper functions? Sebenarnya helper function bukan fitur yang disediakan oleh sequelize, melainkan hanyalah metode yang bisa digunakan untuk memisahkan kode yang digunakan berulang kali sehingga tidak redundant. Layaknya seperti `EJS Partials`. Kita bisa membuat folder `helpers` dan membuat function sesuai kebutuhan aplikasi. Contoh, kita bisa membuat function helper untuk `format date` yang digunakan di banyak tempat.
 
 
+## Demo
+Pada demo kali ini kita akan berfokus pada penggunaan hooks, validasi, dan helper.
+
+### Hooks
+Buatlah sebuah hooks untuk membuat nama event menjadi uppercase sebelum disimpan ke database.
+
+### Validations
+- Pada saat input data event, pastikan semua kolom tidak boleh kosong (wajib menggunakan `allowNull: false`, `notNull`, `notEmpty`).
+- Pastikan tanggal event yang diinput minimal hari ini. (custom validation)
+- Pastikan jika data eventType nya `OFFLINE`, statusnya harus `ACTIVE`. (model wide custom validation)
+
+### Helper
+Buatlah helper function untuk memformat tanggal menjadi `DD/MM/YYYY` dan format totalPrize menjadi IDR.

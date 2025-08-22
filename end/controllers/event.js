@@ -1,3 +1,4 @@
+const { formatIDR } = require('../helpers/formatter');
 const { Game, Manager, Event } = require('../models/index')
 
 class EventController {
@@ -5,7 +6,7 @@ class EventController {
         try {
             const events = await Event.findAll()
 
-            res.render("events", { events })
+            res.render("events", { events, formatIDR })
         } catch (err) {
             console.log(err);
             res.send(err)
@@ -33,7 +34,7 @@ class EventController {
         try {
             const games = await Game.findAll()
 
-            res.render("addForm", { games })
+            res.render("addForm", { games, errors: [] })
         } catch (err) {
             console.log(err);
             res.send(err)
@@ -48,8 +49,14 @@ class EventController {
 
             res.redirect('/events')
         } catch (err) {
-            console.log(err);
-            res.send(err)
+            if (err.name === 'SequelizeValidationError') {
+                const errors = err.errors.map((el) => el.message)
+                const games = await Game.findAll()
+
+                res.render("addForm", { games, errors })
+            } else {
+                res.send(err)
+            }
         }
     }
 
@@ -59,7 +66,7 @@ class EventController {
             const games = await Game.findAll()
             const event = await Event.findByPk(id)
 
-            res.render("editForm", { games, event })
+            res.render("editForm", { games, event, errors: [] })
         } catch (err) {
             console.log(err);
             res.send(err)
@@ -67,8 +74,8 @@ class EventController {
     }
 
     static async edit(req, res) {
+        const { id } = req.params
         try {
-            const { id } = req.params
             const { name, description, totalPrize, eventPoster, eventDate, eventType, eventStatus, GameId } = req.body
 
             await Event.update({ name, description, totalPrize, eventPoster, eventDate, eventType, eventStatus, GameId }, {
@@ -79,8 +86,15 @@ class EventController {
 
             res.redirect('/events')
         } catch (err) {
-            console.log(err);
-            res.send(err)
+            if (err.name === 'SequelizeValidationError') {
+                const errors = err.errors.map((el) => el.message)
+                const games = await Game.findAll()
+                const event = await Event.findByPk(id)
+
+                res.render("addForm", { games, event, errors })
+            } else {
+                res.send(err)
+            }
         }
     }
 

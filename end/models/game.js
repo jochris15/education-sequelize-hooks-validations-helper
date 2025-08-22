@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const { formattedDate } = require('../helpers/formatter');
 module.exports = (sequelize, DataTypes) => {
   class Game extends Model {
     /**
@@ -16,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
     }
 
     get formatDate() {
-      const date = new Date(this.releaseDate)
-      return date.toISOString().split('T')[0]
+      return formattedDate(this.releaseDate)
     }
+
   }
   Game.init({
     name: DataTypes.STRING,
